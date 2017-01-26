@@ -13,11 +13,9 @@ gem 'yaml_ref_resolver'
 ## Usage
 
 ```ruby
-# specify entry point and resolve refs.
-yaml = YamlRefResolver.resolve("example.yaml")
+resolver = YamlRefResolver.new
 
-# dump yaml to a file.
-yaml.write("output.yaml")
+hash = resolver.resolve("index.yaml")
 ```
 
 ## Contributing
