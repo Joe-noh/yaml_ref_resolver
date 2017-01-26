@@ -1,0 +1,35 @@
+post:
+  tags:
+    - product
+  summary: Create a new product
+  parameters:
+    - in: body
+      name: product
+      required: true
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+          price:
+            type: integer
+      required: true
+  responses:
+    201:
+      description: Successfully created.
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+          price:
+            type: integer
+    422:
+      description: Invalid parameters given.
+      schema:
+        type: object
+        properties:
+          code:
+            type: integer
+          details:
+            type: string

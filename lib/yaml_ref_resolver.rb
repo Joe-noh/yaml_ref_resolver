@@ -3,6 +3,7 @@ require "yaml"
 
 class YamlRefResolver
   def initialize
+    @key = '$ref'
   end
 
   def resolve(path)
