@@ -1,11 +1,11 @@
 require 'test_helper'
 
 class YamlRefResolverTest < Minitest::Test
-  def test_that_it_has_a_version_number
-    refute_nil ::YamlRefResolver::VERSION
-  end
+  def test_resolve_single_yaml
+    path = File.join(File.dirname(__FILE__), *%w[yamls single.yaml])
+    resolver = YamlRefResolver.new
+    yaml = resolver.resolve(path)
 
-  def test_it_does_something_useful
-    assert false
+    assert_equal yaml, YAML.load_file(path)
   end
 end

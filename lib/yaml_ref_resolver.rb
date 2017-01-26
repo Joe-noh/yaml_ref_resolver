@@ -1,5 +1,11 @@
 require "yaml_ref_resolver/version"
+require "yaml"
 
-module YamlRefResolver
-  # Your code goes here...
+class YamlRefResolver
+  def initialize
+  end
+
+  def resolve(path)
+    YAML.load_file(path)
+  end
 end

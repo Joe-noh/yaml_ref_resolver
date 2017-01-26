@@ -1,3 +1,3 @@
-module YamlRefResolver
+class YamlRefResolver
   VERSION = "0.1.0"
 end
