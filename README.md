@@ -15,10 +15,34 @@ gem 'yaml_ref_resolver'
 
 ## Usage
 
+Assume that we have following yaml files.
+
+```yaml
+# index.yaml
+author:
+  $ref: './john.yaml#/profile'
+```
+
+```yaml
+# john.yaml
+profile:
+  name: John
+  age: 28
+```
+
+This gem resolves `$ref` references.
+
 ```ruby
 resolver = YamlRefResolver.new
 
-hash = resolver.resolve("index.yaml")
+hash = resolver.resolve('index.yaml')
+#=> {'author' => {'name' => "john", 'age' => 28}}
+```
+
+Optionally you can specify the key.
+
+```ruby
+resolver = YamlRefResolver.new(key: '$import')
 ```
 
 ## Contributing

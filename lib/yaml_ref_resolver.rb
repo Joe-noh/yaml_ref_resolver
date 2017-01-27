@@ -25,7 +25,7 @@ class YamlRefResolver
         ref_path = File.join(base, path)
         ref = self.resolve(ref_path)
 
-        pos.split('/').inject(ref) {|obj, key| obj[key] }
+        pos.split('/').reject {|e| e == "" }.inject(ref) {|obj, key| obj[key] }
       else
         Hash[k, resolve_refs(v, base)]
       end
