@@ -34,6 +34,13 @@ class YamlRefResolverTest < Minitest::Test
     assert_equal yaml['paths']['/products']['post']['responses'][201]['description'], 'Successfully created.'
   end
 
+  def test_resolve_path
+    path = File.join(File.dirname(__FILE__), *%w[yamls path index.yaml])
+    yaml = @resolver.resolve(path)
+
+    assert_equal yaml['paths']['/products']['post']['parameters'][0]['schema']['properties']['name']['type'], 'string'
+  end
+
   def test_custom_key
     resolver = YamlRefResolver.new(key: '$import')
     path = File.join(File.dirname(__FILE__), *%w[yamls custom_key index.yaml])

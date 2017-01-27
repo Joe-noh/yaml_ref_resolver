@@ -1,0 +1,48 @@
+swagger: '2.0'
+info:
+  title: Sample API
+  description: This is a sample swagger yaml/
+  version: "1.0.0"
+host: api.sample.com
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /products:
+    post:
+      tags:
+        - product
+      summary: Create a new product
+      parameters:
+        - in: body
+          name: product
+          required: true
+          schema:
+            $ref: './definitions.yaml#/User'
+            type: object
+            properties:
+              name:
+                type: string
+              price:
+                type: integer
+      responses:
+        201:
+          description: Successfully created.
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              price:
+                type: integer
+        422:
+          description: Invalid parameters given.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              details:
+                type: string
