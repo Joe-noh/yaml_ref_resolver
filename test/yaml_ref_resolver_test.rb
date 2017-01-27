@@ -9,11 +9,11 @@ class YamlRefResolverTest < Minitest::Test
     assert_equal yaml, YAML.load_file(path)
   end
 
-  def test_resolve_multi_yaml
-    path = File.join(File.dirname(__FILE__), *%w[yamls multi index.yaml])
+  def test_resolve_yaml_containing_object
+    path = File.join(File.dirname(__FILE__), *%w[yamls object index.yaml])
     resolver = YamlRefResolver.new
     yaml = resolver.resolve(path)
 
-    assert_equal yaml['paths']['products']['post']['tags'].first, 'product'
+    assert_equal yaml['paths']['/products']['post']['tags'].first, 'product'
   end
 end

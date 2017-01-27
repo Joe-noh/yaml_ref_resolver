@@ -13,7 +13,6 @@ post:
             type: string
           price:
             type: integer
-      required: true
   responses:
     201:
       description: Successfully created.
