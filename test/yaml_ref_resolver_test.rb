@@ -26,4 +26,11 @@ class YamlRefResolverTest < Minitest::Test
     assert_equal yaml['produces'][0], 'application/json'
     assert_equal yaml['produces'][1], 'text/html'
   end
+
+  def test_resolve_yaml_containing_deep_refs
+    path = File.join(File.dirname(__FILE__), *%w[yamls deep index.yaml])
+    yaml = @resolver.resolve(path)
+
+    assert_equal yaml['paths']['/products']['post']['responses'][201]['description'], 'Successfully created.'
+  end
 end

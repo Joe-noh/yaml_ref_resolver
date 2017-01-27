@@ -1,0 +1,8 @@
+description: Successfully created.
+schema:
+  type: object
+  properties:
+    name:
+      type: string
+    price:
+      type: integer
