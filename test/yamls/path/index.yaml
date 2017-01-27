@@ -21,12 +21,6 @@ paths:
           required: true
           schema:
             $ref: './definitions.yaml#/User'
-            type: object
-            properties:
-              name:
-                type: string
-              price:
-                type: integer
       responses:
         201:
           description: Successfully created.
