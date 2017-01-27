@@ -1,0 +1,8 @@
+description: Invalid parameters given.
+schema:
+  type: object
+  properties:
+    code:
+      type: integer
+    details:
+      type: string
