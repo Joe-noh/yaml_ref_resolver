@@ -2,8 +2,8 @@ require "yaml_ref_resolver/version"
 require "yaml"
 
 class YamlRefResolver
-  def initialize
-    @key = '$ref'
+  def initialize(opts = {})
+    @key = opts[:key] || '$ref'
   end
 
   def resolve(path)
