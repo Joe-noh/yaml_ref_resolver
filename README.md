@@ -1,5 +1,8 @@
 # YamlRefResolver
 
+[![Gem Version](https://badge.fury.io/rb/yaml_ref_resolver.svg)](https://badge.fury.io/rb/yaml_ref_resolver)
+[![Build Status](https://travis-ci.org/Joe-noh/yaml_ref_resolver.svg?branch=master)](https://travis-ci.org/Joe-noh/yaml_ref_resolver)
+
 This is a gem that resolves `$ref` references to other YAML files.
 
 ## Installation
