@@ -6,7 +6,6 @@ class YamlRefResolver
     def initialize
       @opt = OptionParser.new
       @input = nil
-      @output = $stdout
 
       define_options
     end
@@ -17,7 +16,7 @@ class YamlRefResolver
       resolver = YamlRefResolver.new
       yaml = resolver.resolve(@input)
 
-      @output.write(yaml.to_yaml)
+      $stdout.write(yaml.to_yaml)
     end
 
     private
@@ -30,10 +29,6 @@ class YamlRefResolver
 
       @opt.on('-i path', '--input', 'entry point path') do |path|
         @input = path
-      end
-
-      @opt.on('-o path', '--output', 'output file path. stdout by default') do |path|
-        @output = File.new(path, 'w')
       end
     end
   end
