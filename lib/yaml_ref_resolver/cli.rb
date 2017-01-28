@@ -28,6 +28,11 @@ class YamlRefResolver
       end
 
       @opt.on('-i path', '--input', 'entry point path') do |path|
+        unless File.exists?(path)
+          puts "#{path} not found"
+          exit 1
+        end
+
         @input = path
       end
     end
