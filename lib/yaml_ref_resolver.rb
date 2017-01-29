@@ -4,37 +4,73 @@ require "yaml"
 class YamlRefResolver
   def initialize(opts = {})
     @key = opts[:key] || '$ref'
+    @yaml = {}
   end
 
   def resolve(path)
-    resolve_refs(YAML.load_file(path), File.dirname(path))
+    entry_point = File.expand_path(path)
+    preload_ref_yamls(entry_point)
+
+    resolve_refs(@yaml[entry_point], entry_point)
   end
 
   private
 
-  def resolve_refs(obj, base)
-    return resolve_hash(obj, base)  if obj.is_a? Hash
-    return resolve_array(obj, base) if obj.is_a? Array
+  def preload_ref_yamls(abs_path)
+    return if @yaml.has_key?(abs_path)
+
+    @yaml[abs_path] = YAML.load_file(abs_path)
+    find_refs(@yaml[abs_path]).each do |ref_target|
+      rel_path, pos = ref_target.split('#')
+      preload_ref_yamls(File.expand_path(rel_path, File.dirname(abs_path)))
+    end
+  end
+
+  def find_refs(obj)
+    do_find_refs(obj).flatten.compact
+  end
+
+  def do_find_refs(obj)
+    return do_find_refs_hash(obj)  if obj.is_a? Hash
+    return do_find_refs_array(obj) if obj.is_a? Array
+    return []
+  end
+
+  def do_find_refs_hash(hash)
+    hash.inject([]) {|acc, (key, val)| acc << (key == @key ? val : do_find_refs(val)) }
+  end
+
+  def do_find_refs_array(array)
+    array.map {|e| find_refs(e) }
+  end
+
+  def resolve_refs(obj, referrer)
+    return resolve_hash(obj, referrer)  if obj.is_a? Hash
+    return resolve_array(obj, referrer) if obj.is_a? Array
     return obj
   end
 
-  def resolve_hash(hash, base)
-    resolved = hash.map do |k, v|
-      if k == @key
-        path, pos = v.split('#')
-        ref_path = File.join(base, path)
-        ref = self.resolve(ref_path)
+  def resolve_hash(hash, referrer)
+    resolved = hash.map do |key, val|
+      if key == @key
+        path, pos = val.split('#')
+        ref_path = File.expand_path(path, File.dirname(referrer))
+        pos_keys = pos.split('/').reject {|s| s == "" }
 
-        pos.split('/').reject {|e| e == "" }.inject(ref) {|obj, key| obj[key] }
+        if pos_keys.size == 0
+          resolve_refs(@yaml[ref_path], ref_path)
+        else
+          resolve_refs(@yaml[ref_path].dig(*pos_keys), ref_path)
+        end
       else
-        Hash[k, resolve_refs(v, base)]
+        Hash[key, resolve_refs(val, referrer)]
       end
     end
 
     resolved.inject{|h1, h2| h1.merge h2 }
   end
 
-  def resolve_array(array, base)
-    array.map {|e| resolve_refs(e, base) }
+  def resolve_array(array, referrer)
+    array.map {|e| resolve_refs(e, referrer) }
   end
 end
