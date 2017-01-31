@@ -48,4 +48,12 @@ class YamlRefResolverTest < Minitest::Test
 
     assert_equal yaml['paths']['/products']['post']['tags'].first, 'product'
   end
+
+  def test_hash_slash_completion
+    path = File.join(File.dirname(__FILE__), *%w[yamls completion index.yaml])
+    yaml = @resolver.resolve(path)
+
+    assert_equal yaml['produces'][0], 'application/json'
+    assert_equal yaml['produces'][1], 'text/html'
+  end
 end
