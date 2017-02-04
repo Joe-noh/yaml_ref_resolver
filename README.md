@@ -51,6 +51,14 @@ Give an entry point yaml with `-i` or `--input` option.
 
 ```console
 $ yaml_ref_resolver -i ./path/to/index.yaml
+
+# dump to stdout
+```
+
+Optionally output file path with `-o` or `--output` can be given.
+
+```console
+$ yaml_ref_resolver -i ./path/to/index.yaml -o ./path/to/output.yaml
 ```
 
 `-w` or `--watch` options watches referenced yaml files and dump whole resolved yaml when one of them changed.
