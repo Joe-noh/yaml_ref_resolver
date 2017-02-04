@@ -45,6 +45,20 @@ Optionally you can specify the key.
 resolver = YamlRefResolver.new(key: '$import')
 ```
 
+### CLI
+
+Give an entry point yaml with `-i` or `--input` option.
+
+```console
+$ yaml_ref_resolver -i ./path/to/index.yaml
+```
+
+`-w` or `--watch` options watches referenced yaml files and dump whole resolved yaml when one of them changed.
+
+```console
+$ yaml_ref_resolver -i ./path/to/index.yaml -w
+```
+
 ## Contributing
 
 Bug reports and pull requests are very welcome on GitHub at https://github.com/Joe-noh/yaml_ref_resolver.
