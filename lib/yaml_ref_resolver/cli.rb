@@ -1,27 +1,40 @@
 require "yaml_ref_resolver"
 require "optparse"
+require "filewatcher"
 
 class YamlRefResolver
   class CLI
     def initialize
       @opt = OptionParser.new
       @input = nil
+      @watch = false
 
       define_options
     end
 
     def run(argv)
       @opt.parse!(argv)
-
       validate_input_path
 
-      resolver = YamlRefResolver.new(key: @key)
-      yaml = resolver.resolve(@input)
+      resolve_and_dump
 
-      $stdout.write(yaml.to_yaml)
+      if @watch
+        FileWatcher.new(resolver.files).watch do |filename|
+          resolver.reload(File.expand_path(filename))
+          resolve_and_dump
+        end
+      end
     end
 
     private
+
+    def resolve_and_dump
+      $stdout.write resolver.resolve(@input).to_yaml
+    end
+
+    def resolver
+      @resolver ||= YamlRefResolver.new(key: @key)
+    end
 
     def define_options
       @opt.on('-v', '--version', 'show version number.') do
@@ -35,6 +48,10 @@ class YamlRefResolver
 
       @opt.on('-k key', '--key', 'key to be resolved. $ref by default') do |key|
         @key = key
+      end
+
+      @opt.on('-w', '--watch', 'glob pattern to watch cahnges') do
+        @watch = true
       end
     end
 
