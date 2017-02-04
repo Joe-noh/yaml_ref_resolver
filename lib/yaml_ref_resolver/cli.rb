@@ -7,6 +7,7 @@ class YamlRefResolver
     def initialize
       @opt = OptionParser.new
       @input = nil
+      @output = nil
       @watch = false
 
       define_options
@@ -29,7 +30,15 @@ class YamlRefResolver
     private
 
     def resolve_and_dump
-      $stdout.write resolver.resolve(@input).to_yaml
+      yaml = resolver.resolve(@input).to_yaml
+
+      if @output
+        File.open(@output, "w") do |f|
+          f.puts yaml
+        end
+      else
+        $stdout.write yaml
+      end
     end
 
     def resolver
@@ -44,6 +53,10 @@ class YamlRefResolver
 
       @opt.on('-i path', '--input', 'entry point path') do |path|
         @input = path
+      end
+
+      @opt.on('-o path', '--output', 'output file path') do |path|
+        @output = path
       end
 
       @opt.on('-k key', '--key', 'key to be resolved. $ref by default') do |key|
