@@ -19,6 +19,10 @@ class YamlRefResolver
     preload_ref_yamls(path)
   end
 
+  def files
+    @yaml.keys
+  end
+
   private
 
   def preload_ref_yamls(abs_path)

@@ -7,6 +7,7 @@ class YamlRefResolver
     def initialize
       @opt = OptionParser.new
       @input = nil
+      @watch = false
 
       define_options
     end
@@ -15,21 +16,20 @@ class YamlRefResolver
       @opt.parse!(argv)
       validate_input_path
 
-      if @glob
-        FileWatcher.new(@glob).watch do |filename|
+      resolve_and_dump
+
+      if @watch
+        FileWatcher.new(resolver.files).watch do |filename|
           resolver.reload(File.expand_path(filename))
           resolve_and_dump
         end
-      else
-        resolve_and_dump
       end
     end
 
     private
 
     def resolve_and_dump
-      yaml = resolver.resolve(@input)
-      $stdout.write(yaml)
+      $stdout.write resolver.resolve(@input).to_yaml
     end
 
     def resolver
@@ -50,8 +50,8 @@ class YamlRefResolver
         @key = key
       end
 
-      @opt.on('-w glob', '--watch', 'glob pattern to watch cahnges') do |glob|
-        @glob = glob
+      @opt.on('-w', '--watch', 'glob pattern to watch cahnges') do
+        @watch = true
       end
     end
 
