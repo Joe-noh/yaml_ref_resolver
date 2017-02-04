@@ -1,5 +1,6 @@
 require "yaml_ref_resolver"
 require "optparse"
+require "filewatcher"
 
 class YamlRefResolver
   class CLI
@@ -12,16 +13,28 @@ class YamlRefResolver
 
     def run(argv)
       @opt.parse!(argv)
-
       validate_input_path
 
-      resolver = YamlRefResolver.new(key: @key)
-      yaml = resolver.resolve(@input)
-
-      $stdout.write(yaml.to_yaml)
+      if @glob
+        FileWatcher.new(@glob).watch do |filename|
+          resolver.reload(File.expand_path(filename))
+          resolve_and_dump
+        end
+      else
+        resolve_and_dump
+      end
     end
 
     private
+
+    def resolve_and_dump
+      yaml = resolver.resolve(@input)
+      $stdout.write(yaml)
+    end
+
+    def resolver
+      @resolver ||= YamlRefResolver.new(key: @key)
+    end
 
     def define_options
       @opt.on('-v', '--version', 'show version number.') do
@@ -35,6 +48,10 @@ class YamlRefResolver
 
       @opt.on('-k key', '--key', 'key to be resolved. $ref by default') do |key|
         @key = key
+      end
+
+      @opt.on('-w glob', '--watch', 'glob pattern to watch cahnges') do |glob|
+        @glob = glob
       end
     end
 

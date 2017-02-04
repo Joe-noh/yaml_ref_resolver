@@ -14,6 +14,11 @@ class YamlRefResolver
     resolve_refs(@yaml[entry_point], entry_point)
   end
 
+  def reload(path)
+    @yaml.delete(path)
+    preload_ref_yamls(path)
+  end
+
   private
 
   def preload_ref_yamls(abs_path)
