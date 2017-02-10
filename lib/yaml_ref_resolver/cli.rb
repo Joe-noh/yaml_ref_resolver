@@ -1,4 +1,5 @@
 require "yaml_ref_resolver"
+require "json"
 require "optparse"
 require "filewatcher"
 
@@ -9,6 +10,7 @@ class YamlRefResolver
       @input = nil
       @output = nil
       @watch = false
+      @json = false
 
       define_options
     end
@@ -30,14 +32,21 @@ class YamlRefResolver
     private
 
     def resolve_and_dump
-      yaml = resolver.resolve(@input).to_yaml
 
       if @output
         File.open(@output, "w") do |f|
-          f.puts yaml
+          f.puts yaml_or_json
         end
       else
-        $stdout.write yaml
+        $stdout.write yaml_or_json
+      end
+    end
+
+    def yaml_or_json
+      if @json
+        JSON.pretty_generate resolver.resolve(@input)
+      else
+        resolver.resolve(@input).to_yaml
       end
     end
 
@@ -65,6 +74,10 @@ class YamlRefResolver
 
       @opt.on('-w', '--watch', 'glob pattern to watch cahnges') do
         @watch = true
+      end
+
+      @opt.on('-j', '--json', 'output in json format') do
+        @json = true
       end
     end
 
