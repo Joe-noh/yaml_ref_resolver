@@ -67,6 +67,12 @@ $ yaml_ref_resolver -i ./path/to/index.yaml -o ./path/to/output.yaml
 $ yaml_ref_resolver -i ./path/to/index.yaml -w
 ```
 
+`-j` or `--json` switch outputs in json format instead of yaml format.
+
+```
+$ yaml_ref_resolver -i ./path/to/index.yaml -j
+```
+
 ## Contributing
 
 Bug reports and pull requests are very welcome on GitHub at https://github.com/Joe-noh/yaml_ref_resolver.
