@@ -61,7 +61,7 @@ Optionally output file path with `-o` or `--output` can be given.
 $ yaml_ref_resolver -i ./path/to/index.yaml -o ./path/to/output.yaml
 ```
 
-`-w` or `--watch` options watches referenced yaml files and dump whole resolved yaml when one of them changed.
+`-w` or `--watch` option watches referenced yaml files and dump whole resolved yaml when one of them changed.
 
 ```console
 $ yaml_ref_resolver -i ./path/to/index.yaml -w
