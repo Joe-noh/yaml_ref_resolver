@@ -29,9 +29,8 @@ class YamlRefResolver
     return if @map.has_key?(abs_path)
 
     @map[abs_path] = Yaml.new(path: abs_path, key: @key)
-    @map[abs_path].refs.each do |ref_target|
-      rel_path, pos = parse_ref(ref_target)
-      preload(File.expand_path(rel_path, File.dirname(abs_path)))
+    @map[abs_path].refs.each do |ref|
+      preload(ref.abs_path)
     end
   end
 
@@ -44,14 +43,15 @@ class YamlRefResolver
   def resolve_hash(hash, referrer)
     resolved = hash.map do |key, val|
       if key == @key
-        path, pos = parse_ref(val)
-        ref_path = File.expand_path(path, File.dirname(referrer))
-        pos_keys = pos.split('/').reject {|s| s == "" }
+        ref = Ref.new(val, referrer)
 
-        if pos_keys.size == 0
+        ref_path = ref.abs_path
+        target_keys = ref.target_keys
+
+        if target_keys.size == 0
           resolve_refs(@map[ref_path].content, ref_path)
         else
-          resolve_refs(@map[ref_path].content.dig(*pos_keys), ref_path)
+          resolve_refs(@map[ref_path].content.dig(*target_keys), ref_path)
         end
       else
         Hash[key, resolve_refs(val, referrer)]
@@ -63,15 +63,5 @@ class YamlRefResolver
 
   def resolve_array(array, referrer)
     array.map {|e| resolve_refs(e, referrer) }
-  end
-
-  def parse_ref(ref)
-    splitted = ref.split('#')
-
-    if splitted.size == 1
-      splitted << '/'
-    else
-      splitted
-    end
   end
 end

@@ -1,3 +1,4 @@
+require "yaml_ref_resolver/ref"
 require "yaml"
 
 class YamlRefResolver::Yaml
@@ -10,7 +11,9 @@ class YamlRefResolver::Yaml
   end
 
   def refs
-    find_refs(@content).flatten.compact
+    find_refs(@content).flatten.compact.map do |ref|
+      YamlRefResolver::Ref.new(ref, @filepath)
+    end
   end
 
   private
