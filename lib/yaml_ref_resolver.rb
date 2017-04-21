@@ -1,4 +1,5 @@
 require "yaml_ref_resolver/version"
+require "yaml_ref_resolver/exceptions"
 require "yaml"
 
 class YamlRefResolver
@@ -9,14 +10,14 @@ class YamlRefResolver
 
   def resolve(path)
     entry_point = File.expand_path(path)
-    preload_ref_yamls(entry_point)
+    preload_ref_yamls!(entry_point)
 
     resolve_refs(@yaml[entry_point], entry_point)
   end
 
   def reload(path)
     @yaml.delete(path)
-    preload_ref_yamls(path)
+    preload_ref_yamls!(path)
   end
 
   def files
@@ -25,13 +26,18 @@ class YamlRefResolver
 
   private
 
-  def preload_ref_yamls(abs_path)
+  def preload_ref_yamls!(abs_path)
     return if @yaml.has_key?(abs_path)
 
-    @yaml[abs_path] = YAML.load_file(abs_path)
+    if File.exists?(abs_path)
+      @yaml[abs_path] = YAML.load_file(abs_path)
+    else
+      raise YamlNotFoundException.new(path: abs_path)
+    end
+
     find_refs(@yaml[abs_path]).each do |ref_target|
       rel_path, pos = parse_ref(ref_target)
-      preload_ref_yamls(File.expand_path(rel_path, File.dirname(abs_path)))
+      preload_ref_yamls!(File.expand_path rel_path, File.dirname(abs_path))
     end
   end
 
