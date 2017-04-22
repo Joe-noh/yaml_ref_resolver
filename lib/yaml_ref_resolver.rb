@@ -62,7 +62,7 @@ class YamlRefResolver
         if target_keys.size == 0
           resolve_refs(@map[ref_path].content, ref_path)
         else
-          resolve_refs(@map[ref_path].content.dig(*target_keys), ref_path)
+          resolve_refs(dig(@map[ref_path].content, target_keys), ref_path)
         end
       else
         Hash[key, resolve_refs(val, referrer)]
@@ -74,5 +74,11 @@ class YamlRefResolver
 
   def resolve_array(array, referrer)
     array.map {|e| resolve_refs(e, referrer) }
+  end
+
+  def dig(hash, keys)
+    keys.inject(hash) do |digged, key|
+      digged[key] or return nil
+    end
   end
 end
