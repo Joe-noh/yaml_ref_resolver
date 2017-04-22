@@ -14,4 +14,14 @@ class YamlRefResolverTest < Minitest::Test
 
     assert_match /yaml file not found/, error.message
   end
+
+  def test_when_yaml_syntax_is_invalid
+    path = File.join(File.dirname(__FILE__), *%w[yamls syntax_error.yaml])
+
+    error = assert_raises YamlRefResolver::YamlSyntaxErrorException do
+      @resolver.resolve(path)
+    end
+
+    assert error.message.include?(path)
+  end
 end

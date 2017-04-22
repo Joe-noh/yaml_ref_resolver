@@ -30,7 +30,11 @@ class YamlRefResolver
     return if @yaml.has_key?(abs_path)
 
     if File.exists?(abs_path)
-      @yaml[abs_path] = YAML.load_file(abs_path)
+      begin
+        @yaml[abs_path] = YAML.load_file(abs_path)
+      rescue Psych::SyntaxError => e
+        raise YamlSyntaxErrorException.new(exception: e)
+      end
     else
       raise YamlNotFoundException.new(path: abs_path)
     end
