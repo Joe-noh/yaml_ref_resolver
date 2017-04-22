@@ -23,25 +23,29 @@ class YamlRefResolver
 
       if @watch
         FileWatcher.new(resolver.files).watch do |filename|
-          resolver.reload(File.expand_path(filename))
-          resolve_and_dump
+          resolve_and_dump(File.expand_path filename)
         end
       end
     end
 
     private
 
-    def resolve_and_dump
+    def resolve_and_dump(changed_file = nil)
+      resolver.reload!(changed_file)
+
       if @output
         File.open(@output, "w") do |f|
-          f.puts resolved_yaml_or_json
+          f.puts resolved_yaml_or_json!
         end
+        log "bundled successfully."
       else
-        $stdout.write resolved_yaml_or_json
+        $stdout.write resolved_yaml_or_json!
       end
+    rescue => e
+      log e.message
     end
 
-    def resolved_yaml_or_json
+    def resolved_yaml_or_json!
       if @json
         JSON.pretty_generate resolver.resolve!(@input)
       else
@@ -90,6 +94,10 @@ class YamlRefResolver
         puts "#{@input} not found"
         exit 1
       end
+    end
+
+    def log(message)
+      puts "[#{Time.now}] #{message}"
     end
   end
 end

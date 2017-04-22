@@ -15,9 +15,18 @@ class YamlRefResolver
     resolve_refs(@yaml[entry_point], entry_point)
   end
 
-  def reload(path)
+  def reload!(path)
+    return unless path
+
+    backup = @yaml[path]
     @yaml.delete(path)
-    preload_ref_yamls!(path)
+
+    begin
+      preload_ref_yamls!(path)
+    rescue => e
+      @yaml[path] = backup
+      raise e
+    end
   end
 
   def files
