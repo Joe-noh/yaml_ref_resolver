@@ -9,7 +9,7 @@ class YamlRefResolverTest < Minitest::Test
     path = File.join(File.dirname(__FILE__), *%w[yamls missing index.yaml])
 
     error = assert_raises YamlRefResolver::YamlNotFoundException do
-      @resolver.resolve(path)
+      @resolver.resolve!(path)
     end
 
     assert_match /yaml file not found/, error.message
@@ -19,7 +19,7 @@ class YamlRefResolverTest < Minitest::Test
     path = File.join(File.dirname(__FILE__), *%w[yamls syntax_error.yaml])
 
     error = assert_raises YamlRefResolver::YamlSyntaxErrorException do
-      @resolver.resolve(path)
+      @resolver.resolve!(path)
     end
 
     assert error.message.include?(path)

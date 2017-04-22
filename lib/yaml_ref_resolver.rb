@@ -8,7 +8,7 @@ class YamlRefResolver
     @yaml = {}
   end
 
-  def resolve(path)
+  def resolve!(path)
     entry_point = File.expand_path(path)
     preload_ref_yamls!(entry_point)
 

@@ -32,21 +32,20 @@ class YamlRefResolver
     private
 
     def resolve_and_dump
-
       if @output
         File.open(@output, "w") do |f|
-          f.puts yaml_or_json
+          f.puts resolved_yaml_or_json
         end
       else
-        $stdout.write yaml_or_json
+        $stdout.write resolved_yaml_or_json
       end
     end
 
-    def yaml_or_json
+    def resolved_yaml_or_json
       if @json
-        JSON.pretty_generate resolver.resolve(@input)
+        JSON.pretty_generate resolver.resolve!(@input)
       else
-        resolver.resolve(@input).to_yaml
+        resolver.resolve!(@input).to_yaml
       end
     end
 
