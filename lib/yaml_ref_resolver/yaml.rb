@@ -1,13 +1,24 @@
-require "yaml_ref_resolver/ref"
 require "yaml"
 
 class YamlRefResolver::Yaml
   attr_reader :content
 
-  def initialize(path:, key: '$ref')
+  def self.load!(path:, key: '$ref')
+    if File.exists?(path)
+      begin
+        self.new(path, YAML.load_file(path), key)
+      rescue Psych::SyntaxError => e
+        raise YamlRefResolver::YamlSyntaxErrorException.new(exception: e)
+      end
+    else
+      raise YamlRefResolver::YamlNotFoundException.new(path: path)
+    end
+  end
+
+  def initialize(path, content, key)
     @filepath = path
+    @content = content
     @key = key
-    @content = YAML.load_file(path)
   end
 
   def refs

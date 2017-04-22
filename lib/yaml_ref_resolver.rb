@@ -1,5 +1,8 @@
 require "yaml_ref_resolver/version"
+require "yaml_ref_resolver/exceptions"
+require "yaml_ref_resolver/ref"
 require "yaml_ref_resolver/yaml"
+require "yaml"
 
 class YamlRefResolver
   def initialize(opts = {})
@@ -7,16 +10,24 @@ class YamlRefResolver
     @map = {}
   end
 
-  def resolve(path)
+  def resolve!(path)
     entry_point = File.expand_path(path)
-    preload(entry_point)
+    preload!(entry_point)
 
     resolve_refs(@map[entry_point].content, entry_point)
   end
 
-  def reload(path)
-    @map.delete(path)
-    preload(path)
+  def reload!(path)
+    return unless path
+
+    backup = @map.delete(path)
+
+    begin
+      preload!(path)
+    rescue => e
+      @map[path] = backup
+      raise e
+    end
   end
 
   def files
@@ -25,12 +36,12 @@ class YamlRefResolver
 
   private
 
-  def preload(abs_path)
+  def preload!(abs_path)
     return if @map.has_key?(abs_path)
 
-    @map[abs_path] = Yaml.new(path: abs_path, key: @key)
+    @map[abs_path] = Yaml.load!(path: abs_path, key: @key)
     @map[abs_path].refs.each do |ref|
-      preload(ref.abs_path)
+      preload!(ref.abs_path)
     end
   end
 

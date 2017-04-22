@@ -1,0 +1,14 @@
+swagger: '2.0'
+info:
+  title: Sample API
+  description: This is a sample swagger yaml/
+  version: "1.0.0"
+host: api.sample.com
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /products:
+    $ref: ./paths/products.yaml#/

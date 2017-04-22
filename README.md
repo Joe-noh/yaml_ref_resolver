@@ -35,7 +35,7 @@ This gem resolves `$ref` references.
 ```ruby
 resolver = YamlRefResolver.new
 
-hash = resolver.resolve('index.yaml')
+hash = resolver.resolve!('index.yaml')
 #=> {'author' => {'name' => "john", 'age' => 28}}
 ```
 
