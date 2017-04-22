@@ -20,13 +20,13 @@ class YamlRefResolver
   def reload!(path)
     return unless path
 
-    backup = @yaml[path]
-    @yaml.delete(path)
+    backup = @map[path]
+    @map.delete(path)
 
     begin
       preload!(path)
     rescue => e
-      @yaml[path] = backup
+      @map[path] = backup
       raise e
     end
   end
