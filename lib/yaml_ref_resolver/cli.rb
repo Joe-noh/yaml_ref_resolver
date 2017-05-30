@@ -19,12 +19,13 @@ class YamlRefResolver
       @opt.parse!(argv)
       validate_input_path
 
-      resolve_and_dump
-
       if @watch
+        resolve_and_dump
         FileWatcher.new(resolver.files).watch do |filename|
           resolve_and_dump(File.expand_path filename)
         end
+      else
+        exit(1) unless resolve_and_dump
       end
     end
 
@@ -43,6 +44,7 @@ class YamlRefResolver
       end
     rescue => e
       log e.message
+      false
     end
 
     def resolved_yaml_or_json!
