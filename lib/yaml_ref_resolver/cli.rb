@@ -42,9 +42,11 @@ class YamlRefResolver
       else
         $stdout.write resolved_yaml_or_json!
       end
+
+      return true
     rescue => e
       log e.message
-      false
+      return false
     end
 
     def resolved_yaml_or_json!
