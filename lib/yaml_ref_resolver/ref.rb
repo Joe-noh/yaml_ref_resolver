@@ -3,7 +3,7 @@ class YamlRefResolver::Ref
     @base_dir = File.dirname(base_path)
 
     if target.start_with?("#")
-      @target_file = nil
+      @target_file = base_path
       @target_level = target.sub("#", "")
     elsif !target.include?("#")
       @target_file = target
