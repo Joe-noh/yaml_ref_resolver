@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class YamlRefResolverTest < Minitest::Test
+class ExceptionTest < Minitest::Test
   def setup
     @resolver = YamlRefResolver.new
   end
