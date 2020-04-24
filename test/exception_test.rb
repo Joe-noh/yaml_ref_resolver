@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class YamlRefResolverTest < Minitest::Test
+class ExceptionTest < Minitest::Test
   def setup
     @resolver = YamlRefResolver.new
   end
@@ -12,7 +12,7 @@ class YamlRefResolverTest < Minitest::Test
       @resolver.resolve!(path)
     end
 
-    assert_match /yaml file not found/, error.message
+    assert_match %r/yaml file not found/, error.message
   end
 
   def test_when_yaml_syntax_is_invalid

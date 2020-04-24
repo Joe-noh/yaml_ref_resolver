@@ -94,7 +94,7 @@ class YamlRefResolver
         exit 1
       end
 
-      unless File.exists?(@input)
+      unless File.exist?(@input)
         puts "#{@input} not found"
         exit 1
       end
