@@ -4,7 +4,7 @@ class YamlRefResolver::Yaml
   attr_reader :content
 
   def self.load!(path:, key: '$ref')
-    if File.exists?(path)
+    if File.exist?(path)
       begin
         self.new(path, YAML.load_file(path), key)
       rescue Psych::SyntaxError => e
