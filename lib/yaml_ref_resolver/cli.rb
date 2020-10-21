@@ -1,7 +1,11 @@
 require "yaml_ref_resolver"
 require "json"
 require "optparse"
-require "filewatcher"
+
+begin
+  require "filewatcher"
+rescue => LoadError
+end
 
 class YamlRefResolver
   class CLI
@@ -79,7 +83,11 @@ class YamlRefResolver
         @key = key
       end
 
-      @opt.on('-w', '--watch', 'glob pattern to watch cahnges') do
+      @opt.on('-w', '--watch', 'glob pattern to watch changes (needs filewatcher rubygem)') do
+        unless defined? FileWatcher
+          puts 'you need the `filewatcher` rubgem to watch for changes. You can run `gem install filewatcher` to install it.'
+          exit 1
+        end
         @watch = true
       end
 
