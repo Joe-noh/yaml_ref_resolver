@@ -85,7 +85,7 @@ class YamlRefResolver
 
       @opt.on('-w', '--watch', 'glob pattern to watch changes (needs filewatcher rubygem)') do
         unless defined? FileWatcher
-          puts 'you need the `filewatcher` rubgem to watch for changes. You can run `gem install filewatcher` to install it.'
+          puts 'you need the `filewatcher` rubygem to watch for changes. You can run `gem install filewatcher` to install it.'
           exit 1
         end
         @watch = true
