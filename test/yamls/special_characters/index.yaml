@@ -10,5 +10,5 @@ basePath: /v1
 produces:
   - application/json
 paths:
-  /products:
-    $ref: ./paths/products.yaml#/
+  /test~products/{name}:
+    $ref: ./paths/products.yaml#/~1test~0products~1{name}
