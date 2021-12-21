@@ -18,7 +18,13 @@ class YamlRefResolver::Ref
   end
 
   def target_keys
-    @target_level.split("/").reject {|s| s == "" }
+    @target_level
+      .split("/")
+      .reject {|s| s == "" }
+      .each do |o|
+        o.gsub!("~1", "/")
+        o.gsub!("~0", "~")
+      end
   end
 end
 

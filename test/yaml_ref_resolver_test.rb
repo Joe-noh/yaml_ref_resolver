@@ -63,4 +63,11 @@ class YamlRefResolverTest < Minitest::Test
     assert_equal yaml['produces'][0], 'application/json'
     assert_equal yaml['produces'][1], 'text/html'
   end
+
+  def test_resolve_yaml_containing_special_characters_ref
+    path = File.join(File.dirname(__FILE__), *%w[yamls special_characters index.yaml])
+    yaml = @resolver.resolve!(path)
+
+    assert_equal yaml['paths']['/test~products/{name}']['post']['parameters'][0]['name'], 'name'
+  end
 end
