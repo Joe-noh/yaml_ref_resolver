@@ -4,7 +4,7 @@ require "optparse"
 
 begin
   require "filewatcher"
-rescue => LoadError
+rescue LoadError
 end
 
 class YamlRefResolver
